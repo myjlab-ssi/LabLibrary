@@ -1,0 +1,16 @@
+version: "3"
+services:
+  splash:
+    image: splash:latest
+    ports:
+      - "5023:5023"
+      - "8050:8050"
+      - "8051:8051"
+  crawler:
+    build:
+      context: ./docker/
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/crawler
+    command:
+      scrapy crawl booklog -o booklog.jl
