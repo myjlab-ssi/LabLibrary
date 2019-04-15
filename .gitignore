@@ -230,3 +230,5 @@ fabric.properties
 /crawler/crawler/settings.py
 *.jl
 
+.idea
+

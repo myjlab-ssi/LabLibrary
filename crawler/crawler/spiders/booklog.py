@@ -11,14 +11,15 @@ class BooklogSpider(scrapy.Spider):
     start_urls = ['https://booklog.jp/users/myutaka3/all?category_id=all&status=all&sort=sort_desc&rank=all&page={}&json=true']
 
     def start_requests(self):
-        page_counter = 84
+        page_counter = 1
         while True:
             next_url = self.start_urls[0].format(page_counter)
             page_counter += 1
             yield scrapy.Request(next_url, callback=self.parse)
     def parse(self, response):
         booklog_json = json.loads(response.text)
-        self.logger.info(f"Get response object {response}")
+        book_count = len(booklog_json["books"])
+        self.logger.info(f"Get response object {response}, book count: {book_count}")
         if len(booklog_json["books"]) == 0:
             # booksが0になったらクローリング終了
             raise CloseSpider("Crawling complete")

@@ -6,6 +6,9 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymysql
 from crawler import settings
+import firebase_admin
+from firebase_admin import credentials, firestore
+import logging
 
 class CrawlerPipeline(object):
     def process_item(self, item, spider):
@@ -37,4 +40,19 @@ class MySQLPipeline(object):
             cursor.execute(sql, (item["book_id"], item["title"], item["authors"], item["image"], item["image_2x"], item["create_on"], item["publisher"], item["release_date"], item["price"], item["pages"], item["url"]))
         self.connection.commit()
         return item
-        
+
+class FireStorePipeline(object):
+    def open_spider(self, spider):
+        cred = credentials.Certificate("./LaBooks-962ae4d2b4c3.json")
+        firebase_admin.initialize_app(cred)
+        self.client = firestore.client()
+    
+    def process_item(self, item, spider):
+        item_dict = dict(item)
+        item_dict["created_at"] = firestore.SERVER_TIMESTAMP
+        self.client.collection('books').add(item_dict)
+        logging.info("Store firestore bookId: {}".format(item["book_id"]))
+        return item
+    
+    def close_spider(self, spider):
+        self.client.close()
