@@ -29,7 +29,7 @@
       <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon>{{ `chevron_${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
-      <v-btn icon>
+      <v-btn href="/search" icon>
         <v-icon>search</v-icon>
       </v-btn>
     </v-toolbar>
@@ -77,6 +77,11 @@ export default {
       right: true,
       rightDrawer: false,
       title: 'Vuetify.js'
+    }
+  },
+  methods: {
+    back() {
+      this.$router.back()
     }
   }
 }

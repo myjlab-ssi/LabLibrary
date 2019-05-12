@@ -1,7 +1,9 @@
 const state = () => ({
   books: [],
   user: null,
-  filteredBooks: []
+  filteredBooks: [],
+  filterWord: '',
+  detailBookData: null
 })
 
 export default state

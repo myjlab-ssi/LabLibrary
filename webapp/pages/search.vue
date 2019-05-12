@@ -1,19 +1,22 @@
 <template>
-  <v-container>
-    <v-layout column justify-center align-center>
-      <v-form>
-        <v-flex xs12 md6>
-          <v-text-field
-            v-model="filterWord"
-            label="Search"
-            :full-width="true"
-            required
-            solo
-            style="width: 70%;"
-          ></v-text-field>
-        </v-flex>
+  <v-layout column justify-center>
+    <v-flex xs12 sm8 md6>
+      <v-form xs12 sm6>
+        <v-text-field
+          v-model="filterWord"
+          label="Search"
+          :full-width="true"
+          required
+          solo
+          lazy-validation
+        ></v-text-field>
+        <v-btn color="success" @click="search">
+          Search
+        </v-btn>
       </v-form>
-      <template v-if="books.length !== 0">
+    </v-flex>
+    <template v-if="books.length !== 0">
+      <v-layout column justify-center align-center>
         <v-flex xs12 sm8 md6>
           <v-card v-for="book in books" :key="book.book_id">
             <v-img
@@ -34,9 +37,9 @@
           </v-card>
           <a @click="nextPage">次の20件</a>
         </v-flex>
-      </template>
-    </v-layout>
-  </v-container>
+      </v-layout>
+    </template>
+  </v-layout>
 </template>
 
 <script>
@@ -52,7 +55,11 @@ export default {
     async nextPage() {
       const lastDate = this.books[this.books.length - 1].create_on
       const limit = 20
-      await this.$store.dispatch('FETCH_NEXT_BOOKS', { skip: lastDate, limit })
+      await this.$store.dispatch('FILTER_NEXT_BOOKS', {
+        skip: lastDate,
+        limit,
+        filterWord: this.filterWord
+      })
     },
     async search() {
       await this.$store.dispatch('FILTER_BOOKS', {
